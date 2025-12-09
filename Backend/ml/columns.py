@@ -1,0 +1,68 @@
+# LISTA ACOMODADA PARA IMPRIMIR
+COLUMNS = [
+    'Marca temporal',
+    'Nombres',
+    'Apellidos',
+    'Numero de identificación ',
+    'Correo electrónico',
+    'Número de teléfono',
+    'Fecha de nacimiento',
+    'Genero',
+    'Estado civil',
+    'Nivel educativo',
+    'Grupo poblacional ',
+    'Estrato socioeconómico ',
+    'Lugar actual de residencia ',
+    '¿Cambio su lugar o municipio de residencia debido a su programa de formación?',
+    'Dirección de residencia  (Calle / Carrera / Avenida / Diagonal / Transversal / Barrio)',
+    'Ocupación actual',
+    '¿Tiene hijos ?',
+    'Si respondido, si, a la pregunta anterior, ¿Cuántos hijos tiene ?',
+    '¿Usted es la persona encargada de generar la mayor parte de los ingresos que cubren sus gastos de sostenimiento (formación, alimentación, transporte, etc.)?  ',
+    '¿Cuál es la principal fuente de ingresos que utiliza para cubrir sus gastos de sostenimiento (formación, alimentación, transporte, etc.)?  ',
+    '¿Con quien vive actualmente? ',
+    '¿Quién es la cabeza del hogar?',
+    '¿En qué tipo de vivienda reside actualmente?',
+    'Número de personas que viven con usted',
+    '¿Su familia y amigos consideran su formación una prioridad?',
+    'Distancia aproximada de su hogar al centro de formación',
+    'Medio de transporte que utiliza con frecuencia hacia su centro de formación',
+    'Tiempo promedio de desplazamiento hacia su centro de formación',
+    'Centro de formación',
+    'Programa en el que está inscrito (nombre completo en minúsculas y tildes)',
+    'Numero de ficha ',
+    '¿Por qué eligió este programa? ',
+    '¿Tiene algún conocimiento del programa al cual ingreso?',
+    '¿Qué expectativas tiene del programa?',
+    '¿Ha solicitado apoyos externos (subsidios, becas, etc.)?',
+    'Jornada de su formación ',
+    'Horas de estudio fuera de la jornada',
+    '¿Cuenta con dispositivos tecnológicos para estudiar? ',
+    '¿Su dispositivo o medios tecnológicos se encuentran en estado optimo para realizar las tareas que se requieren en la formación?',
+    '¿En su lugar de residencia tiene dificultades de conexión a internet?',
+    'Comparte su dispositivo de estudio con otras personas? ',
+    '¿Cuenta con algún conocimiento acerca de los medios y herramientas tecnológicas?',
+    '¿Con que frecuencia utiliza la tecnología como medio de aprendizaje?',
+    '¿cuenta con alguna discapacidad  permanente que dificulte actividades diarias como  (ver, oír, hablar, moverse, aprender, o relacionarse)? ',
+    'Si la respuesta a la pregunta anterior es si, marque los tipos de discapacidad que presenta',
+    '  ¿Cuenta con algún certificado de discapacidad?',
+    '¿Piensa ejercer los conocimientos adquiridos en su programa? ',
+    '¿Considera que recibir apoyo emocional o psicológico mejoraría su experiencia?',
+    '¿Siente que en su entorno valoran su esfuerzo? ',
+    '¿Está rodeado de personas que influyen positivamente en su aprendizaje? ',
+    '¿Ha sido víctima de discriminación? ',
+    '¿Ha experimentado problemas o daños por el conflicto armado?',
+    '¿En qué medida la situación de conflicto en su región ha afectado su vida diaria?',
+    '¿Qué tan difícil es para usted pedir ayuda cuando tiene una dificultad?',
+    '¿Cómo ha afectado el conflicto armado en tu familia?',
+    '¿Cómo ha afectado el conflicto armado su bienestar emocional?',
+]
+
+
+def print_columns():
+    print("[")
+    for col in COLUMNS:
+        print(f"    '{col}',")
+    print("]")
+
+print_columns()
