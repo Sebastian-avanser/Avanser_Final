@@ -1,4 +1,4 @@
-# pipeline.py (corregido)
+# 
 from load_data import load_and_process       # supongamos que load_data(ruta) devuelve un pd.DataFrame
 from target import generar_target
 from preprocess import preprocess_data
