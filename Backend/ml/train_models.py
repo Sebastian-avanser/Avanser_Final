@@ -1,55 +1,35 @@
-from sklearn.model_selection import train_test_split
+# train_models.py
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import accuracy_score
 
 
-def train_models(X, y):
-    # 1. Separar train / test
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y,
-        test_size=0.2,
-        random_state=42,
-        stratify=y
-    )
+def entrenar_modelos(X_train, X_test, y_train, y_test):
 
-    print("Train:", X_train.shape)
-    print("Test :", X_test.shape)
+    print("\nEntrenando modelos...")
 
-    # ==================================
-    # MODELOS
-    # ==================================
-
-    models = {
-        "Regresión Logística": LogisticRegression(
-            max_iter=2000,
-            multi_class="multinomial",
-            solver="lbfgs"
-        ),
-        "Árbol de Decisión": DecisionTreeClassifier(
-            max_depth=6,
-            random_state=42
-        ),
-        "Random Forest": RandomForestClassifier(
-            n_estimators=200,
-            max_depth=10,
-            random_state=42
-        )
+    modelos = {
+        "LogisticRegression": LogisticRegression(max_iter=2000),
+        "DecisionTree": DecisionTreeClassifier(),
+        "RandomForest": RandomForestClassifier()
     }
 
-    trained_models = {}
+    resultados = {}
 
-    for name, model in models.items():
-        print(f"\n===== {name} =====")
+    for nombre, modelo in modelos.items():
+        print(f"→ Entrenando {nombre}...")
+        modelo.fit(X_train, y_train)
 
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
+        pred = modelo.predict(X_test)
+        acc = accuracy_score(y_test, pred)
+        resultados[nombre] = acc
 
-        print("Accuracy:", accuracy_score(y_test, y_pred))
-        print("Matriz de Confusión:\n", confusion_matrix(y_test, y_pred))
-        print("Reporte de Clasificación:\n", classification_report(y_test, y_pred))
+        print(f"✔ {nombre} completado. Accuracy: {acc:.4f}")
 
-        trained_models[name] = model
+    print("\n=== RESULTADOS DE LOS MODELOS ===")
+    for nombre, acc in resultados.items():
+        print(f"{nombre}: {acc:.4f}")
 
-    return trained_models
+    return modelos, resultados

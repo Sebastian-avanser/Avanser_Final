@@ -1,113 +1,112 @@
+# preprocess.py
+
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 
-# ==========================
-# CONFIGURACIÓN
-# ==========================
+TARGET_COLUMN = "riesgo"
 
-TARGET_COLUMN = 'riesgo'
-
+# columnas categóricas limpias
 CATEGORICAL_COLS_TO_ENCODE = [
-    'Genero', 'Estado civil', 'Nivel educativo', 'Grupo poblacional',
-    'Estrato socioeconómico', 'Lugar actual de residencia',
-    'Cambio su lugar o municipio de residencia debido a su programa de formación',
-    'Ocupación actual', 'Tiene hijos',
-
-    'Usted es la persona encargada de generar la mayor parte de los ingresos que cubren sus gastos de sostenimiento (formación, alimentación, transporte, etc.)',
-    'Cuál es la principal fuente de ingresos que utiliza para cubrir sus gastos de sostenimiento (formación, alimentación, transporte, etc.)',
-
-    'Con quien vive actualmente', 'Quién es la cabeza del hogar',
-    'En qué tipo de vivienda reside actualmente',
-    'Su familia y amigos consideran su formación una prioridad',
-
-    'Medio de transporte que utiliza con frecuencia hacia su centro de formación',
-    'Centro de formación',
-    'Programa en el que está inscrito (nombre completo en minúsculas y tildes)',
-
-    'Por qué eligió este programa',
-    'Tiene algún conocimiento del programa al cual ingreso',
-    'Qué expectativas tiene del programa',
-    'Ha solicitado apoyos externos (subsidios, becas, etc.)',
-    'Jornada de su formación',
-
-    'Cuenta con dispositivos tecnológicos para estudiar',
-    'Su dispositivo o medios tecnológicos se encuentran en estado optimo para realizar las tareas que se requieren en la formación',
-    'En su lugar de residencia tiene dificultades de conexión a internet',
-    'Comparte su dispositivo de estudio con otras personas',
-
-    'Cuenta con algún conocimiento acerca de los medios y herramientas tecnológicas',
-    'Con que frecuencia utiliza la tecnología como medio de aprendizaje',
-
-    'cuenta con alguna discapacidad permanente que dificulte actividades diarias como (ver, oír, hablar, moverse, aprender, o relacionarse)',
-    'Si la respuesta a la pregunta anterior es si, marque los tipos de discapacidad que presenta',
-    'Cuenta con algún certificado de discapacidad',
-
-    'Piensa ejercer los conocimientos adquiridos en su programa',
-    'Considera que recibir apoyo emocional o psicológico mejoraría su experiencia',
-    'Siente que en su entorno valoran su esfuerzo',
-    'Está rodeado de personas que influyen positivamente en su aprendizaje',
-    'Ha sido víctima de discriminación',
-    'Ha experimentado problemas o daños por el conflicto armado',
+    'genero', 'estado_civil', 'nivel_educativo', 'grupo_poblacional',
+    'estrato_socioeconomico', 'lugar_actual_de_residencia',
+    'cambio_su_lugar_o_municipio_de_residencia_debido_a_su_programa_de_formacion',
+    'ocupacion_actual', 'tiene_hijos',
+    'usted_es_la_persona_encargada_de_generar_la_mayor_parte_de_los_ingresos_que_cubren_sus_gastos_de_sostenimiento_formacion_alimentacion_transporte_etc',
+    'cual_es_la_principal_fuente_de_ingresos_que_utiliza_para_cubrir_sus_gastos_de_sostenimiento_formacion_alimentacion_transporte_etc',
+    'con_quien_vive_actualmente', 'quien_es_la_cabeza_del_hogar',
+    'en_que_tipo_de_vivienda_reside_actualmente',
+    'su_familia_y_amigos_consideran_su_formacion_una_prioridad',
+    'medio_de_transporte_que_utiliza_con_frecuencia_hacia_su_centro_de_formacion',
+    'centro_de_formacion',
+    'programa_en_el_que_esta_inscrito_nombre_completo_en_minusculas_y_tildes',
+    'por_que_eligio_este_programa',
+    'tiene_algun_conocimiento_del_programa_al_cual_ingreso',
+    'que_expectativas_tiene_del_programa',
+    'ha_solicitado_apoyos_externos_subsidios_becas_etc',
+    'jornada_de_su_formacion',
+    'cuenta_con_dispositivos_tecnologicos_para_estudiar',
+    'su_dispositivo_o_medios_tecnologicos_se_encuentran_en_estado_optimo_para_realizar_las_tareas_que_se_requieren_en_la_formacion',
+    'en_su_lugar_de_residencia_tiene_dificultades_de_conexion_a_internet',
+    'comparte_su_dispositivo_de_estudio_con_otras_personas',
+    'cuenta_con_algun_conocimiento_acerca_de_los_medios_y_herramientas_tecnologicas',
+    'con_que_frecuencia_utiliza_la_tecnologia_como_medio_de_aprendizaje',
+    'cuenta_con_alguna_discapacidad_permanente_que_dificulte_actividades_diarias_como_ver_oir_hablar_moverse_aprender_o_relacionarse',
+    'si_la_respuesta_a_la_pregunta_anterior_es_si_marque_los_tipos_de_discapacidad_que_presenta',
+    'cuenta_con_algun_certificado_de_discapacidad',
+    'piensa_ejercer_los_conocimientos_adquiridos_en_su_programa',
+    'considera_que_recibir_apoyo_emocional_o_psicologico_mejoraria_su_experiencia',
+    'siente_que_en_su_entorno_valoran_su_esfuerzo',
+    'esta_rodeado_de_personas_que_influyen_positivamente_en_su_aprendizaje',
+    'ha_sido_victima_de_discriminacion',
+    'ha_experimentado_problemas_o_danos_por_el_conflicto_armado'
 ]
 
-# ==========================
-# PREPROCESAMIENTO
-# ==========================
 
-def preprocess_data(df, target_col=TARGET_COLUMN):
+def preprocess_data(df):
 
-    if target_col not in df.columns:
-        raise ValueError(f"La columna objetivo '{target_col}' no existe")
+    print("\n==== INICIANDO PREPROCESAMIENTO ====")
 
     df = df.copy()
 
-    # --------------------------
-    # IMPUTACIÓN LÓGICA (HIJOS)
-    # --------------------------
+    # 1. ELIMINAR COLUMNAS 
+    columnas_fuera = [
+        "marca_temporal", "nombres", "apellidos",
+        "numero_de_identificacion", "correo_electronico", "numero_de_telefono",
+        "direccion_de_residencia_calle_carrera_avenida_diagonal_transversal_barrio",
+        "fecha_de_nacimiento"
+    ]
+    df = df.drop(columns=[c for c in columnas_fuera if c in df.columns])
+    print("Columnas removidas:", columnas_fuera)
 
-    col_hijos = "Si respondido, si, a la pregunta anterior, Cuántos hijos tiene"
+    # 2. PROCESAR "NUMERO DE HIJOS"
+    hijos_col = "si_respondido_si_a_la_pregunta_anterior_cuantos_hijos_tiene"
+    if hijos_col in df.columns:
 
-    if col_hijos in df.columns:
-
-        def convertir_hijos(valor):
+        def conv(valor):
             if pd.isna(valor):
                 return 0
-            valor = str(valor)
-
-            if "-" in valor:      # '1-2'
-                return int(valor.split("-")[0])
-            if "más" in valor:
-                return 3
+            s = str(valor).strip()
+            if "-" in s:
+                return int(s.split("-")[0])
             try:
-                return int(valor)
+                return int(s)
             except:
                 return 0
 
-        df[col_hijos] = df[col_hijos].apply(convertir_hijos)
+        df["hijos"] = df[hijos_col].apply(conv)
+        df = df.drop(columns=[hijos_col])
+        print("✔ Columna 'hijos' convertida correctamente.")
 
-    # --------------------------
-    # ONE HOT ENCODING
-    # --------------------------
+    # 3. ONE-HOT
+    cols = [c for c in CATEGORICAL_COLS_TO_ENCODE if c in df.columns]
+    print("\nColumnas categóricas encontradas para one-hot:")
+    print(cols)
 
-    cols_to_encode = [c for c in CATEGORICAL_COLS_TO_ENCODE if c in df.columns]
-    df = pd.get_dummies(df, columns=cols_to_encode, drop_first=True)
+    df = pd.get_dummies(df, columns=cols, drop_first=True)
+    print("✔ One-hot encoding aplicado.")
 
-    # --------------------------
-    # ESCALADO
-    # --------------------------
-
+    # 4. ESCALAR
     numeric_cols = df.select_dtypes(include=np.number).columns.tolist()
-    numeric_cols.remove(target_col)
+    numeric_cols.remove("riesgo")
+
+    print("\nColumnas numéricas a escalar:")
+    print(numeric_cols)
 
     scaler = StandardScaler()
     df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
+    print("✔ Escalamiento aplicado.")
 
-    # --------------------------
-    # X / y
-    # --------------------------
+    # 5. SEPARAR X e y
+    X = df.drop(columns=["riesgo"])
+    y = df["riesgo"]
 
-    X = df.drop(columns=[target_col])
-    y = df[target_col]
+    # 6. SPLIT
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-    return X, y, scaler
+    print("\n==== PREPROCESAMIENTO COMPLETO ====")
+
+    return X_train, X_test, y_train, y_test

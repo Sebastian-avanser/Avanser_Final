@@ -1,6 +1,16 @@
+from pathlib import Path
 from load_data import load_and_process
 
-ruta = "../data/encuesta.csv"   # ⚠️ AJUSTA LA RUTA A TU CSV
+BASE_DIR = Path(__file__).resolve().parent
+ruta = BASE_DIR.parent / "data" / "encuesta.csv"
+
+
+ruta = "../data/encuesta.csv"  
+
+print("Ruta:", ruta)
+print("Existe?:", ruta.exists())
+
+
 
 X, y, df = load_and_process(ruta)
 

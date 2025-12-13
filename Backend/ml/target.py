@@ -1,91 +1,94 @@
+# target.py
+
 def calcular_riesgo(fila):
     score = 0
 
-    # ECONÓMICO
+    # =============== ECONÓMICO ===============
     fuente = fila.get(
-        'Cuál es la principal fuente de ingresos que utiliza para cubrir sus gastos de sostenimiento (formación, alimentación, transporte, etc.)',
+        'cual_es_la_principal_fuente_de_ingresos_que_utiliza_para_cubrir_sus_gastos_de_sostenimiento_formacion_alimentacion_transporte_etc',
         ""
     )
     if fuente in ["Ninguno", "Subsidios", "Familiar sin ingresos estables"]:
         score += 3
 
     if fila.get(
-        'Usted es la persona encargada de generar la mayor parte de los ingresos que cubren sus gastos de sostenimiento (formación, alimentación, transporte, etc.)',
+        'usted_es_la_persona_encargada_de_generar_la_mayor_parte_de_los_ingresos_que_cubren_sus_gastos_de_sostenimiento_formacion_alimentacion_transporte_etc',
         ""
     ) == "Sí":
         score += 3
 
-    estrato = str(fila.get('Estrato socioeconómico', "")).strip()
+    estrato = str(fila.get('estrato_socioeconomico', "")).strip()
     if estrato in ["1", "2"]:
         score += 1
 
-    # TECNOLOGÍA
-    if fila.get('Cuenta con dispositivos tecnológicos para estudiar', "") == "No":
+    # =============== TECNOLOGÍA ===============
+    if fila.get('cuenta_con_dispositivos_tecnologicos_para_estudiar', "") == "No":
         score += 3
 
     if fila.get(
-        'Su dispositivo o medios tecnológicos se encuentran en estado optimo para realizar las tareas que se requieren en la formación',
+        'su_dispositivo_o_medios_tecnologicos_se_encuentran_en_estado_optimo_para_realizar_las_tareas_que_se_requieren_en_la_formacion',
         ""
     ) == "No":
         score += 2
 
-    if fila.get('En su lugar de residencia tiene dificultades de conexión a internet', "") == "Sí":
+    if fila.get('en_su_lugar_de_residencia_tiene_dificultades_de_conexion_a_internet', "") == "Sí":
         score += 3
 
-    if fila.get('Comparte su dispositivo de estudio con otras personas', "") == "Sí":
+    if fila.get('comparte_su_dispositivo_de_estudio_con_otras_personas', "") == "Sí":
         score += 1
 
-    # FAMILIAR
-    if fila.get('Tiene hijos', "") == "Sí":
+    # =============== FAMILIAR ===============
+    if fila.get('tiene_hijos', "") == "Sí":
         score += 2
-        hijos = fila.get('Si respondido, si, a la pregunta anterior, Cuántos hijos tiene', 0)
+
+        hijos = fila.get('si_respondido_si_a_la_pregunta_anterior_cuantos_hijos_tiene', 0)
         try:
             if int(hijos) >= 2:
                 score += 1
         except:
             pass
 
-    if fila.get('Con quien vive actualmente', "") in ["Solo", "Hogar disfuncional"]:
+    if fila.get('con_quien_vive_actualmente', "") in ["Solo", "Hogar disfuncional"]:
         score += 2
 
-    if fila.get('Quién es la cabeza del hogar', "") == "Yo mismo":
+    if fila.get('quien_es_la_cabeza_del_hogar', "") == "Yo mismo":
         score += 3
 
-    # TRANSPORTE
+    # =============== TRANSPORTE ===============
     try:
-        if float(fila.get('Distancia aproximada de su hogar al centro de formación', 0)) > 20:
+        if float(fila.get('distancia_aproximada_de_su_hogar_al_centro_de_formacion', 0)) > 20:
             score += 2
     except:
         pass
 
     try:
-        if float(fila.get('Tiempo promedio de desplazamiento hacia su centro de formación', 0)) > 45:
+        if float(fila.get('tiempo_promedio_de_desplazamiento_hacia_su_centro_de_formacion', 0)) > 45:
             score += 2
     except:
         pass
 
-    # MOTIVACIÓN
-    if fila.get('Tiene algún conocimiento del programa al cual ingreso', "") == "No":
+    # =============== MOTIVACIÓN ===============
+    if fila.get('tiene_algun_conocimiento_del_programa_al_cual_ingreso', "") == "No":
         score += 2
 
-    if fila.get('Qué expectativas tiene del programa', "") in ["No sé", "Pocas expectativas"]:
+    if fila.get('que_expectativas_tiene_del_programa', "") in ["No sé", "Pocas expectativas"]:
         score += 2
 
-    if fila.get('Su familia y amigos consideran su formación una prioridad', "") == "No":
+    if fila.get('su_familia_y_amigos_consideran_su_formacion_una_prioridad', "") == "No":
         score += 3
 
-    # APOYO
-    if fila.get('Ha solicitado apoyos externos (subsidios, becas, etc.)', "") == "Sí":
+    # =============== APOYO ===============
+    if fila.get('ha_solicitado_apoyos_externos_subsidios_becas_etc', "") == "Sí":
         score += 1
 
-    # EMOCIONAL
-    if fila.get('Ha sido víctima de discriminación', "") == "Sí":
+    # =============== EMOCIONAL ===============
+    if fila.get('ha_sido_victima_de_discriminacion', "") == "Sí":
         score += 2
 
-    if fila.get('Ha experimentado problemas o daños por el conflicto armado', "") == "Sí":
+    if fila.get('ha_experimentado_problemas_o_danos_por_el_conflicto_armado', "") == "Sí":
         score += 3
 
-    # CLASIFICACIÓN FINAL
+    # =============== CLASIFICACIÓN FINAL ===============
     if score >= 8:
         return 2  # Alto riesgo
     elif score >= 4:
@@ -93,6 +96,6 @@ def calcular_riesgo(fila):
     else:
         return 0  # Bajo riesgo
 
+
 def generar_target(df):
-    print("TIPO DE DF:", type(df))
     return df.apply(calcular_riesgo, axis=1)
